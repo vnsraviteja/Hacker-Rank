@@ -8,8 +8,7 @@ public class BinarySearchTree extends BinaryTree {
 
 	
 	public BinarySearchTree() {
-		super();
-		
+		super();	
 	}
 	
 	public BinarySearchTree(int [] input) {
@@ -89,7 +88,7 @@ public class BinarySearchTree extends BinaryTree {
 					return null;
 				}
 
-			} else if (bst.value > 0) {
+			} else if (bst.value > o) {
 				if (bst.left != null) {
 					t = bst.left;
 				} else {
@@ -105,12 +104,59 @@ public class BinarySearchTree extends BinaryTree {
 
 	@Override
 	public void delete(Itree t, Integer o) {
-		BinarySearchTree s = (BinarySearchTree) search(t,o);
-		if(s.right == null) {
-			
+		BinarySearchTree s = (BinarySearchTree) search(t,o),parent,succ;
+		if(s.left == null || s.right == null) {
+			parent = (BinarySearchTree) this.parent(t,o);
+			if(parent.left == s){
+				parent.left = (s.left == null ? s.right : s.left);
+			}
+			else {
+				parent.right = (s.left == null ? s.right : s.left);
+			}
+		}
+		else {
+			succ = (BinarySearchTree) this.successor(t, o);
+			Integer temp = succ.value;
+			delete(t,temp);
+			s.value = temp;
 		}
 	}
 
+	public boolean isLeaf(Itree t) {
+		BinarySearchTree s = (BinarySearchTree) t;
+		if(s.left == null && s.right == null) {
+			return true;
+		}
+		return false;
+	}
+	
+	public Itree parent(Itree t,Integer o) {
+		Itree prev = null;
+		BinarySearchTree bst = null;
+		while (true && t != null) {
+			prev = bst;
+			bst = (BinarySearchTree) t;
+			if (bst.value < o) {
+				if (bst.right != null) {
+					t = bst.right;
+				} else {
+					return null;
+				}
+
+			} else if (bst.value > o) {
+				if (bst.left != null) {
+					t = bst.left;
+				} else {
+					return null;
+				}
+			}
+			else {
+				return prev;
+			}
+		}
+		return prev;
+	}
+	@Override
 	public Itree successor(Itree t, Integer o) {
 		Itree s = search(t,o) ;
 		BinarySearchTree temp = null;

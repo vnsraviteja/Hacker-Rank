@@ -4,97 +4,61 @@ import java.util.Iterator;
 import java.util.Stack;
 
 public class IIIDDD {
-
-	public static boolean[] status = new boolean[9];
-
+	public static Stack<Integer> numStack  = new Stack<Integer>(); 
+	
 	public static void main(String args[]) {
-
-		String[] pattern = { "I", "D", "II", "ID", "DI", "DD", "IDID", "DIDI", "IIDDD", "DDIDDIID" };
-		Stack s = new Stack();
+		String [] other = {"I", "D", "II", "ID", "DI", "DD", "IDID", "DIDI"};
+		String[] pattern = {"I", "D", "II", "ID", "DI", "DD", "IDID", "DIDI", "IIDDD",  "DDIDDIID" };
 		for (int i = 0; i < pattern.length; i++) {
-			if(pattern[i].charAt(0)=='I'){
-				s.push(1);
-				status[0] = true;
-			}
-			else {
-				s.push(2);
-				status[1] = true;
-			}
-			PrintMinNumberForPattern(pattern[i], 0, s);
+			numStack.push(1);
+			printMinNumber(pattern[i],0);
+			printStack(numStack);
 		}
-	}
-
-	private static void PrintMinNumberForPattern(String input, int index, Stack s) {
-		if (input.length() < 9) {
-			if (index < input.length()) {
-				if (input.charAt(index) == 'I') {
-					int succ = successor((Integer)s.peek());
-					if(succ != 0) {
-						status[succ-1] = true;
-						s.push(succ);
-						PrintMinNumberForPattern(input,index+1,s);
-					}
-					/*else {
-						int top =(Integer)s.peek();
-						status[top-1] = false;
-						s.pop();
-						top = (Integer)s.peek();
-						PrintMinNumberForPattern(input,index-1,s);
-					}*/
-				} else {
-					int pre = predecessor((Integer)s.peek());
-					if(pre != 0 ) {
-						status[pre-1] = true;
-						s.push(pre);
-						PrintMinNumberForPattern(input,index+1,s);
-					}
-					else {
-						
-					}
-				}
-			} else {
-				return;
-			}
-		} else {
-			for (int i = 0; i < 9; i++) {
-				System.out.print("9  ");
-			}
-			System.out.println();
-		}
-
-	}
-
-	public static void print(Stack s) {
-		Iterator itr = s.iterator();
-		while (itr.hasNext()) {
-			System.out.print(itr.next() + "  ");
-		}
-		System.out.println();
-	}
-
-	public static boolean isAvailable(int t) {
-		if (status[t - 1] == true) {
-			return true;
-		} else
-			return false;
-
-	}
-
-	public static int successor(int key) {
-		for (int i = key-1; i < status.length; i++) {
-			if (!status[i]) {
-				return i+1 ;
-			}
-		}
-		return 0;
 	}
 	
-	public static int predecessor(int key) {
-		for (int i = key-1; i > 0; i--) {
-			if (!status[i]) {
-				return i+1;
+	private static void printMinNumber(String input,int indx) {
+		int num = numStack.peek();
+		if(indx < input.length()) {
+			if(input.charAt(indx) == 'I') {
+				numStack.push(num+1);
+				printMinNumber(input,indx+1);
+			}
+			else if(input.charAt(indx) == 'D') {
+				if(num > 1) {
+					numStack.push(num-1);
+					printMinNumber(input,indx+1);
+				}
+				else {
+					int i = indx-1;
+					while(i>=0) {
+						if(input.charAt(i)== 'I') {
+							numStack.push(numStack.pop()+1);
+							printMinNumber(input,i+1);
+							break;
+						}
+						else {
+							numStack.pop();
+							i--;
+						}				
+					}
+					if(i == -1) {
+						numStack.push(numStack.pop()+1);
+						printMinNumber(input,0);
+					}
+				}
 			}
 		}
-		return 0;
+		else return;
+	}
+	
+	public static void printStack(Stack s) {
+		Stack s_new = new Stack() ;
+		while(!s.isEmpty()){
+			s_new.push(s.pop());
+		}
+		while(!s_new.isEmpty()) {
+			System.out.print(s_new.pop());
+		}
+		System.out.println();
 	}
 }

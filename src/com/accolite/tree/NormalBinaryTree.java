@@ -27,6 +27,5 @@ public class NormalBinaryTree extends BinaryTree {
 		
 	}
 
-	
 
 }
